@@ -8,10 +8,11 @@ import {
   MessageCircle,
   Clock,
   TrendingUp,
-  User
+  User,
+  ChevronRight
 } from 'lucide-react';
 
-const ThreadCard = ({ thread, isLiked: initialIsLiked }) => {
+const ThreadCard = ({ thread, isLiked: initialIsLiked, className = '' }) => {
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.auth);
   
@@ -51,106 +52,128 @@ const ThreadCard = ({ thread, isLiked: initialIsLiked }) => {
   };
 
   return (
-    <div className="thread-card group">
-      <div className="flex items-start gap-4">
-        {/* Author Avatar */}
-        <div className="relative">
-          <div className="w-12 h-12 bg-gold-gradient rounded-full flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform duration-200">
-            <span className="text-white font-semibold text-sm">
-              {thread.author?.userName?.[0]?.toUpperCase() || 'U'}
-            </span>
-          </div>
-          {thread.isPinned && (
-            <div className="absolute -top-1 -right-1 w-5 h-5 bg-gold-500 rounded-full flex items-center justify-center">
-              <Pin className="h-3 w-3 text-white fill-current" />
+    <div className={`group bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-blue-200 dark:hover:border-blue-700/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/5 ${className}`}>
+      <div className="p-6">
+        <div className="flex items-start gap-4">
+          {/* Author Avatar */}
+          <div className="relative flex-shrink-0">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all duration-300">
+              <span className="text-white font-bold text-sm">
+                {thread.author?.userName?.[0]?.toUpperCase() || 'U'}
+              </span>
             </div>
-          )}
-        </div>
+            {thread.isPinned && (
+              <div className="absolute -top-1 -right-1 w-5 h-5 bg-amber-500 rounded-full flex items-center justify-center shadow-md">
+                <Pin className="h-3 w-3 text-white fill-current" />
+              </div>
+            )}
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-800"></div>
+          </div>
 
-        {/* Thread Content */}
-        <div className="flex-1 min-w-0">
-          {/* Title and Category */}
-          <div className="flex items-start justify-between gap-3 mb-3">
-            <div className="flex-1 min-w-0">
-              <Link
-                to={`/threads/${encodeURIComponent(thread.slug)}`}
-                className="block group/link"
-              >
-                <h3 className="text-lg font-semibold text-navy-900 dark:text-navy-50 group-hover/link:text-ocean-600 dark:group-hover/link:text-ocean-400 line-clamp-2 mb-2 transition-colors duration-200">
-                  {thread.title}
-                </h3>
-              </Link>
+          {/* Thread Content */}
+          <div className="flex-1 min-w-0">
+            {/* Header */}
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <div className="flex-1 min-w-0">
+                <Link
+                  to={`/threads/${encodeURIComponent(thread.slug)}`}
+                  className="block group/link"
+                >
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 group-hover/link:text-blue-600 dark:group-hover/link:text-blue-400 line-clamp-2 mb-2 transition-colors duration-200 leading-tight">
+                    {thread.title}
+                  </h3>
+                </Link>
+                
+                {thread.description && (
+                  <div 
+                    className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 mb-3 leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: thread.description }}
+                  />
+                )}
+              </div>
               
-              {thread.description && (
-                <div 
-                  className="text-sm text-muted line-clamp-2 mb-3"
-                  dangerouslySetInnerHTML={{ __html: thread.description }}
-                />
+              {thread.category && (
+                <span className="flex-shrink-0 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-semibold border border-blue-200 dark:border-blue-700/50">
+                  {thread.category.name}
+                </span>
               )}
             </div>
-            
-            {thread.category && (
-              <span className="badge-primary flex-shrink-0">
-                {thread.category.name}
-              </span>
-            )}
-          </div>
 
-          {/* Meta Information */}
-          <div className="flex items-center gap-4 text-sm text-muted mb-4">
-            <div className="flex items-center gap-1">
-              <User className="h-4 w-4" />
-              <span className="font-medium text-navy-700 dark:text-navy-300">
-                {thread.author?.userName || 'Unknown'}
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Clock className="h-4 w-4" />
-              <span>{formatDate(thread.createdAt)}</span>
-            </div>
-            {thread.updatedAt !== thread.createdAt && (
+            {/* Meta Information */}
+            <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400 mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center">
+                  <User className="h-3 w-3 text-slate-600 dark:text-slate-400" />
+                </div>
+                <span className="font-medium text-slate-700 dark:text-slate-300">
+                  {thread.author?.userName || 'Unknown'}
+                </span>
+              </div>
               <div className="flex items-center gap-1">
-                <TrendingUp className="h-4 w-4" />
-                <span>Updated {formatDate(thread.updatedAt)}</span>
+                <Clock className="h-4 w-4" />
+                <span>{formatDate(thread.createdAt)}</span>
               </div>
-            )}
-          </div>
-
-          {/* Stats and Actions */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <div className="stat-item">
-                <Eye className="h-4 w-4" />
-                <span className="font-medium">{thread.views || 0}</span>
-                <span className="hidden sm:inline">views</span>
-              </div>
-              
-              <div className="stat-item">
-                <MessageCircle className="h-4 w-4" />
-                <span className="font-medium">{thread.replies || 0}</span>
-                <span className="hidden sm:inline">replies</span>
-              </div>
-              
-              <button
-                onClick={handleLike}
-                className={`stat-item hover:text-coral-500 transition-colors duration-200 ${
-                  isLiked
-                    ? 'text-coral-500'
-                    : ''
-                }`}
-              >
-                <Heart className={`h-4 w-4 ${isLiked ? 'fill-current' : ''}`} />
-                <span className="font-medium">{likeCount}</span>
-                <span className="hidden sm:inline">likes</span>
-              </button>
+              {thread.updatedAt !== thread.createdAt && (
+                <div className="flex items-center gap-1">
+                  <TrendingUp className="h-4 w-4" />
+                  <span>Updated {formatDate(thread.updatedAt)}</span>
+                </div>
+              )}
             </div>
-            
-            <Link
-              to={`/threads/${encodeURIComponent(thread.slug)}`}
-              className="btn-primary text-sm px-4 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-            >
-              Read More
-            </Link>
+
+            {/* Stats and Actions */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                  <div className="w-8 h-8 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center">
+                    <Eye className="h-4 w-4" />
+                  </div>
+                  <div className="text-sm">
+                    <span className="font-bold text-slate-900 dark:text-slate-100">{thread.views || 0}</span>
+                    <span className="hidden sm:inline ml-1">views</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
+                  <div className="w-8 h-8 bg-slate-100 dark:bg-slate-700 rounded-lg flex items-center justify-center">
+                    <MessageCircle className="h-4 w-4" />
+                  </div>
+                  <div className="text-sm">
+                    <span className="font-bold text-slate-900 dark:text-slate-100">{thread.replies || 0}</span>
+                    <span className="hidden sm:inline ml-1">replies</span>
+                  </div>
+                </div>
+                
+                <button
+                  onClick={handleLike}
+                  className={`flex items-center gap-2 transition-all duration-200 hover:scale-105 ${
+                    isLiked
+                      ? 'text-red-500'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-red-500'
+                  }`}
+                >
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 ${
+                    isLiked 
+                      ? 'bg-red-100 dark:bg-red-900/30' 
+                      : 'bg-slate-100 dark:bg-slate-700 hover:bg-red-100 dark:hover:bg-red-900/30'
+                  }`}>
+                    <Heart className={`h-4 w-4 ${isLiked ? 'fill-current' : ''}`} />
+                  </div>
+                  <div className="text-sm">
+                    <span className="font-bold">{likeCount}</span>
+                    <span className="hidden sm:inline ml-1">likes</span>
+                  </div>
+                </button>
+              </div>
+              
+              <Link
+                to={`/threads/${encodeURIComponent(thread.slug)}`}
+                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-medium text-sm shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 opacity-0 group-hover:opacity-100"
+              >
+                Read More
+                <ChevronRight className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
         </div>
       </div>

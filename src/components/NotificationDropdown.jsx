@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Bell, Check, Trash2, X } from 'lucide-react';
+import { Bell, Check, Trash2, X, BellRing } from 'lucide-react';
 import { 
   fetchNotifications, 
   fetchUnreadCount, 
@@ -95,11 +95,11 @@ const NotificationDropdown = () => {
       {/* Notification Bell */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 text-gray-500 hover:text-lime-600 dark:text-gray-400 dark:hover:text-lime-300 transition-colors duration-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+        className="relative p-2.5 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all duration-200 group"
       >
-        <Bell className="h-5 w-5" />
+        <Bell className="h-5 w-5 group-hover:animate-pulse" />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-lg animate-pulse">
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}
@@ -107,24 +107,29 @@ const NotificationDropdown = () => {
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50 max-h-96 overflow-hidden">
+        <div className="absolute right-0 top-full mt-3 w-96 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl z-50 max-h-96 overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-              Notifications
-            </h3>
+          <div className="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/50">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                <BellRing className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+                Notifications
+              </h3>
+            </div>
             <div className="flex items-center gap-2">
               {unreadCount > 0 && (
                 <button
                   onClick={handleMarkAllAsRead}
-                  className="text-xs text-lime-600 dark:text-lime-400 hover:text-lime-700 dark:hover:text-lime-300 transition-colors duration-200"
+                  className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 rounded-lg"
                 >
                   Mark all read
                 </button>
               )}
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300 transition-colors duration-200"
+                className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300 transition-colors p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -134,54 +139,59 @@ const NotificationDropdown = () => {
           {/* Notifications List */}
           <div className="max-h-80 overflow-y-auto">
             {loading ? (
-              <div className="p-4 text-center">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-lime-600 mx-auto"></div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Loading notifications...</p>
+              <div className="p-6 text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-2 border-slate-300 border-t-blue-600 mx-auto mb-4"></div>
+                <p className="text-slate-600 dark:text-slate-400 font-medium">Loading notifications...</p>
               </div>
             ) : notifications.length > 0 ? (
-              <div className="divide-y divide-gray-200 dark:divide-gray-700">
+              <div className="divide-y divide-slate-200 dark:divide-slate-700">
                 {notifications.map((notification) => (
                   <div
                     key={notification.notificationId}
                     onClick={() => handleNotificationClick(notification)}
-                    className={`p-4 cursor-pointer transition-colors duration-200 ${
+                    className={`p-6 cursor-pointer transition-all duration-200 hover:bg-slate-50 dark:hover:bg-slate-700/50 ${
                       notification.isRead 
-                        ? 'bg-white dark:bg-gray-800' 
-                        : 'bg-blue-50 dark:bg-gray-700'
-                    } hover:bg-gray-50 dark:hover:bg-gray-700`}
+                        ? 'bg-white dark:bg-slate-800' 
+                        : 'bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500'
+                    }`}
                   >
                     <div className="flex items-start justify-between">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                      <div className="flex-1 min-w-0 pr-4">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 line-clamp-1">
                             {notification.title}
                           </h4>
                           {!notification.isRead && (
-                            <div className="w-2 h-2 bg-lime-500 rounded-full flex-shrink-0"></div>
+                            <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 animate-pulse"></div>
                           )}
                         </div>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 line-clamp-2">
+                        <p className="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 mb-2 leading-relaxed">
                           {notification.message}
                         </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
                           {formatTimeAgo(notification.createdAt)}
                         </p>
                       </div>
                       <button
                         onClick={(e) => handleDeleteNotification(e, notification.notificationId)}
-                        className="ml-2 text-gray-400 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 transition-colors duration-200"
+                        className="flex-shrink-0 text-slate-400 hover:text-red-500 dark:text-slate-400 dark:hover:text-red-400 transition-colors p-1 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
                       >
-                        <Trash2 className="h-3 w-3" />
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="p-4 text-center">
-                <Bell className="h-8 w-8 text-gray-400 dark:text-gray-400 mx-auto mb-2" />
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  No notifications yet
+              <div className="p-8 text-center">
+                <div className="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Bell className="h-8 w-8 text-slate-400" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">
+                  All caught up!
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400">
+                  No new notifications at the moment
                 </p>
               </div>
             )}
@@ -189,10 +199,10 @@ const NotificationDropdown = () => {
 
           {/* Footer */}
           {notifications.length > 0 && (
-            <div className="p-3 border-t border-gray-200 dark:border-gray-700">
+            <div className="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/50">
               <button
                 onClick={() => navigate('/notifications')}
-                className="w-full text-xs text-lime-600 dark:text-lime-400 hover:text-lime-700 dark:hover:text-lime-300 text-center transition-colors duration-200"
+                className="w-full text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-center py-2 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-xl transition-colors"
               >
                 View all notifications
               </button>

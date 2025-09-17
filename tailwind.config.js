@@ -8,7 +8,35 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Nautical Blue - Primary colors inspired by ocean depths
+        // Modern slate-based color system
+        slate: {
+          50: '#f8fafc',
+          100: '#f1f5f9',
+          200: '#e2e8f0',
+          300: '#cbd5e1',
+          400: '#94a3b8',
+          500: '#64748b',
+          600: '#475569',
+          700: '#334155',
+          800: '#1e293b',
+          900: '#0f172a',
+          950: '#020617',
+        },
+        // Enhanced blue system for marine theme
+        blue: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#3b82f6',
+          600: '#2563eb',
+          700: '#1d4ed8',
+          800: '#1e40af',
+          900: '#1e3a8a',
+          950: '#172554',
+        },
+        // Nautical accent colors
         ocean: {
           50: '#f0f9ff',
           100: '#e0f2fe', 
@@ -22,21 +50,7 @@ module.exports = {
           900: '#0c4a6e',
           950: '#082f49',
         },
-        // Deep Navy - Dark blues for headers and accents
-        navy: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b',
-          900: '#0f172a',
-          950: '#020617',
-        },
-        // Maritime Gold - Accent color for highlights
+        // Maritime gold for accents
         gold: {
           50: '#fffbeb',
           100: '#fef3c7',
@@ -50,7 +64,7 @@ module.exports = {
           900: '#78350f',
           950: '#451a03',
         },
-        // Sea Foam - Light accent colors
+        // Sea foam for success states
         seafoam: {
           50: '#f0fdfa',
           100: '#ccfbf1',
@@ -64,34 +78,6 @@ module.exports = {
           900: '#134e4a',
           950: '#042f2e',
         },
-        // Coral - Warm accent for notifications and CTAs
-        coral: {
-          50: '#fef2f2',
-          100: '#fee2e2',
-          200: '#fecaca',
-          300: '#fca5a5',
-          400: '#f87171',
-          500: '#ef4444',
-          600: '#dc2626',
-          700: '#b91c1c',
-          800: '#991b1b',
-          900: '#7f1d1d',
-          950: '#450a0a',
-        },
-        // Keep primary as ocean for backward compatibility
-        primary: {
-          50: '#f0f9ff',
-          100: '#e0f2fe', 
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
-          950: '#082f49',
-        },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
@@ -99,16 +85,16 @@ module.exports = {
         body: ['Inter', 'system-ui', 'sans-serif'],
       },
       fontSize: {
-        'xs': ['0.75rem', { lineHeight: '1rem' }],
-        'sm': ['0.875rem', { lineHeight: '1.25rem' }],
-        'base': ['1rem', { lineHeight: '1.5rem' }],
-        'lg': ['1.125rem', { lineHeight: '1.75rem' }],
-        'xl': ['1.25rem', { lineHeight: '1.75rem' }],
-        '2xl': ['1.5rem', { lineHeight: '2rem' }],
-        '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
-        '4xl': ['2.25rem', { lineHeight: '2.5rem' }],
-        '5xl': ['3rem', { lineHeight: '1' }],
-        '6xl': ['3.75rem', { lineHeight: '1' }],
+        'xs': ['0.75rem', { lineHeight: '1.1rem', letterSpacing: '0.025em' }],
+        'sm': ['0.875rem', { lineHeight: '1.35rem', letterSpacing: '0.025em' }],
+        'base': ['1rem', { lineHeight: '1.6rem', letterSpacing: '0.025em' }],
+        'lg': ['1.125rem', { lineHeight: '1.75rem', letterSpacing: '0.025em' }],
+        'xl': ['1.25rem', { lineHeight: '1.85rem', letterSpacing: '0.025em' }],
+        '2xl': ['1.5rem', { lineHeight: '2rem', letterSpacing: '0.025em' }],
+        '3xl': ['1.875rem', { lineHeight: '2.25rem', letterSpacing: '-0.025em' }],
+        '4xl': ['2.25rem', { lineHeight: '2.5rem', letterSpacing: '-0.025em' }],
+        '5xl': ['3rem', { lineHeight: '3.25rem', letterSpacing: '-0.025em' }],
+        '6xl': ['3.75rem', { lineHeight: '4rem', letterSpacing: '-0.025em' }],
       },
       spacing: {
         '18': '4.5rem',
@@ -119,58 +105,94 @@ module.exports = {
         'xl': '0.75rem',
         '2xl': '1rem',
         '3xl': '1.5rem',
+        '4xl': '2rem',
       },
       boxShadow: {
         'xs': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-        'sm': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-        'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-        'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-        'xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        'sm': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
+        'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)',
+        'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
+        'xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
         '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-        'ocean': '0 4px 14px 0 rgba(14, 165, 233, 0.15)',
-        'ocean-lg': '0 10px 25px 0 rgba(14, 165, 233, 0.25)',
-        'gold': '0 4px 14px 0 rgba(245, 158, 11, 0.15)',
-        'card': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-        'card-hover': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        'inner': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)',
+        // Custom shadows
+        'glow': '0 0 20px rgba(59, 130, 246, 0.15)',
+        'glow-lg': '0 0 30px rgba(59, 130, 246, 0.2)',
+        'card': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
+        'card-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
       },
       backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
         'ocean-gradient': 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%)',
         'navy-gradient': 'linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #020617 100%)',
         'gold-gradient': 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%)',
         'seafoam-gradient': 'linear-gradient(135deg, #14b8a6 0%, #0d9488 50%, #0f766e 100%)',
-        'maritime': 'linear-gradient(135deg, #0ea5e9 0%, #14b8a6 100%)',
+        'maritime': 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',
         'wave': 'wave 2s ease-in-out infinite',
-        'fade-in': 'fadeIn 0.5s ease-in-out',
-        'slide-up': 'slideUp 0.3s ease-out',
-        'ripple': 'ripple 0.6s linear',
+        'fade-in': 'fade-in 0.5s ease-out',
+        'slide-up': 'slide-up 0.3s ease-out',
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'bounce-gentle': 'bounce 2s infinite',
       },
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-4px)' },
+          '50%': { transform: 'translateY(-8px)' },
         },
         wave: {
           '0%, 100%': { transform: 'scaleX(1)' },
           '50%': { transform: 'scaleX(1.1)' },
         },
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
+        'fade-in': {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
-        slideUp: {
-          '0%': { transform: 'translateY(10px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
-        },
-        ripple: {
-          '0%': { transform: 'scale(0)', opacity: '1' },
-          '100%': { transform: 'scale(4)', opacity: '0' },
+        'slide-up': {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       },
       backdropBlur: {
         xs: '2px',
+      },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: 'none',
+            color: 'rgb(51 65 85)',
+            lineHeight: '1.7',
+            fontSize: '1rem',
+            p: {
+              marginTop: '1.25em',
+              marginBottom: '1.25em',
+            },
+            h1: {
+              fontSize: '2.25em',
+              fontWeight: '800',
+              lineHeight: '1.2',
+              marginTop: '0',
+              marginBottom: '0.8888889em',
+            },
+            h2: {
+              fontSize: '1.875em',
+              fontWeight: '700',
+              lineHeight: '1.3333333',
+              marginTop: '1.5555556em',
+              marginBottom: '0.8888889em',
+            },
+            h3: {
+              fontSize: '1.5em',
+              fontWeight: '600',
+              lineHeight: '1.4',
+              marginTop: '1.6em',
+              marginBottom: '0.6em',
+            },
+          },
+        },
       },
     },
   },

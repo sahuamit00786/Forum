@@ -8,7 +8,6 @@ import { fetchBlogCategories } from './store/slices/blogSlice';
 import { fetchArticleCategories } from './store/slices/articleSlice';
 import { clearViewedEntities } from './store/slices/likesSlice';
 import Header from './components/Layout/Header';
-import Sidebar from './components/Layout/Sidebar';
 import Home from './pages/Home';
 import Threads from './pages/Threads';
 import Blogs from './pages/Blogs';
@@ -27,7 +26,6 @@ import CategoryView from './pages/CategoryView';
 import SearchResults from './pages/SearchResults';
 import SEOFileViewer from './components/SEO/SEOFileViewer';
 
-
 function App() {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -43,12 +41,12 @@ function App() {
   const isSEORoute = location.pathname === '/sitemap.xml' || location.pathname === '/robots.txt';
 
   useEffect(() => {
-    // Load theme from localStorage or default to dark mode
+    // Load theme from localStorage or default to light mode
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
       dispatch(setTheme(savedTheme === 'dark'));
     } else {
-      dispatch(setTheme(true)); // Default to dark mode
+      dispatch(setTheme(false)); // Default to light mode for modern look
     }
 
     // Initialize auth from localStorage
@@ -99,10 +97,10 @@ function App() {
     <div className={`min-h-screen transition-all duration-300 ${
       isSEORoute 
         ? '' // No styling for SEO routes
-        : 'bg-navy-50 dark:bg-navy-900 text-navy-900 dark:text-navy-50'
+        : 'bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-100 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800'
     }`}>
       {!isInAdminPanel && !isSEORoute && !isAuthPage && <Header />}
-      <main className={`${!isInAdminPanel && !isSEORoute && !isAuthPage ? 'pt-4 pb-8' : ''} min-h-screen w-full`}>
+      <main className={`${!isInAdminPanel && !isSEORoute && !isAuthPage ? '' : ''} min-h-screen w-full`}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/category/:categorySlug" element={<CategoryView />} />

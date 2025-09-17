@@ -1,15 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Search, X } from 'lucide-react';
+import { Search, X, Loader2 } from 'lucide-react';
 import { getSuggestions, clearSuggestions } from '../store/slices/searchSlice';
-import Toast from './Toast';
 
 const SearchInput = ({ 
-  placeholder = "Search threads, blogs, articles...",
+  placeholder = "Search discussions, articles...",
   value: externalValue,
   onChange: externalOnChange,
-  onSubmit: externalOnSubmit
+  onSubmit: externalOnSubmit,
+  className = ""
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -18,10 +18,7 @@ const SearchInput = ({
   const [query, setQuery] = useState(externalValue || '');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [isNavigating, setIsNavigating] = useState(false);
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastType, setToastType] = useState('success');
+  const [isFocused, setIsFocused] = useState(false);
   
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
@@ -41,14 +38,11 @@ const SearchInput = ({
     }
 
     if (query.trim().length >= 2) {
-      console.log('Searching for:', query.trim());
       debounceRef.current = setTimeout(() => {
-        console.log('Dispatching getSuggestions for:', query.trim());
         dispatch(getSuggestions({ prefix: query.trim(), limit: 8 }));
         setShowSuggestions(true);
       }, 300);
     } else {
-      console.log('Clearing suggestions');
       dispatch(clearSuggestions());
       setShowSuggestions(false);
     }
@@ -59,11 +53,6 @@ const SearchInput = ({
       }
     };
   }, [query, dispatch]);
-
-  // Debug suggestions state
-  useEffect(() => {
-    console.log('Suggestions state:', { suggestions, suggestionsLoading, showSuggestions });
-  }, [suggestions, suggestionsLoading, showSuggestions]);
 
   // Handle keyboard navigation
   useEffect(() => {
@@ -114,16 +103,6 @@ const SearchInput = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Reset navigating state when component unmounts or location changes
-  useEffect(() => {
-    const handleLocationChange = () => {
-      setIsNavigating(false);
-    };
-
-    window.addEventListener('popstate', handleLocationChange);
-    return () => window.removeEventListener('popstate', handleLocationChange);
-  }, []);
-
   const handleSearch = () => {
     if (query.trim()) {
       if (externalOnSubmit) {
@@ -133,80 +112,31 @@ const SearchInput = ({
       }
       setShowSuggestions(false);
       setSelectedIndex(-1);
+      inputRef.current?.blur();
     }
   };
 
-  const handleSuggestionClick = async (suggestion) => {
-    try {
-      // Set navigating state
-      setIsNavigating(true);
-      
-      // Validate suggestion data
-      if (!validateSuggestion(suggestion)) {
-        console.error('Invalid suggestion data:', suggestion);
-        setToastMessage('Invalid suggestion data. Please try searching instead.');
-        setToastType('error');
-        setShowToast(true);
-        setIsNavigating(false);
+  const handleSuggestionClick = (suggestion) => {
+    let url;
+    switch (suggestion.type) {
+      case 'thread':
+        url = `/threads/${suggestion.slug}`;
+        break;
+      case 'blog':
+        url = `/blogs/${suggestion.slug}`;
+        break;
+      case 'article':
+        url = `/articles/${suggestion.slug}`;
+        break;
+      default:
         return;
-      }
-
-      // Construct the URL based on content type
-      let url;
-      switch (suggestion.type) {
-        case 'thread':
-          url = `/threads/${suggestion.slug}`;
-          break;
-        case 'blog':
-          url = `/blogs/${suggestion.slug}`;
-          break;
-        case 'article':
-          url = `/articles/${suggestion.slug}`;
-          break;
-        default:
-          console.error('Unknown content type:', suggestion.type);
-          setToastMessage('Unknown content type');
-          setToastType('error');
-          setShowToast(true);
-          setIsNavigating(false);
-          return;
-      }
-
-      // Clear suggestions
-      setQuery('');
-      setShowSuggestions(false);
-      setSelectedIndex(-1);
-      dispatch(clearSuggestions());
-      
-      // Show loading state for at least 1 second to give user feedback
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Navigate to the content
-      navigate(url);
-      
-      // Set a timeout to handle navigation issues (15 seconds total)
-      const navigationTimeout = setTimeout(() => {
-        if (isNavigating) {
-          setToastMessage('Content loading is taking longer than expected. Please try again.');
-          setToastType('error');
-          setShowToast(true);
-          setIsNavigating(false);
-        }
-      }, 15000); // 15 seconds total timeout
-      
-      // Clear timeout when component unmounts or navigation completes
-      return () => clearTimeout(navigationTimeout);
-      
-    } catch (error) {
-      console.error('Error navigating to suggestion:', error);
-      setToastMessage('Error navigating to content. Redirecting to search results.');
-      setToastType('error');
-      setShowToast(true);
-      // Fallback: navigate to search results instead
-      navigate(`/search?q=${encodeURIComponent(suggestion.title || suggestion.slug)}`);
-    } finally {
-      setIsNavigating(false);
     }
+
+    setQuery('');
+    setShowSuggestions(false);
+    setSelectedIndex(-1);
+    dispatch(clearSuggestions());
+    navigate(url);
   };
 
   const handleInputChange = (e) => {
@@ -227,29 +157,6 @@ const SearchInput = ({
     inputRef.current?.focus();
   };
 
-  // Validate suggestion before navigation
-  const validateSuggestion = (suggestion) => {
-    if (!suggestion) return false;
-    
-    // Check if suggestion has required fields
-    if (!suggestion.type || !suggestion.slug || !suggestion.title) {
-      return false;
-    }
-    
-    // Validate content type
-    const validTypes = ['thread', 'blog', 'article'];
-    if (!validTypes.includes(suggestion.type)) {
-      return false;
-    }
-    
-    // Validate slug format (basic check)
-    if (typeof suggestion.slug !== 'string' || suggestion.slug.trim().length === 0) {
-      return false;
-    }
-    
-    return true;
-  };
-
   const getTypeIcon = (type) => {
     switch (type) {
       case 'thread':
@@ -266,7 +173,7 @@ const SearchInput = ({
   const getTypeLabel = (type) => {
     switch (type) {
       case 'thread':
-        return 'Thread';
+        return 'Discussion';
       case 'blog':
         return 'Blog';
       case 'article':
@@ -277,63 +184,83 @@ const SearchInput = ({
   };
 
   return (
-    <div className="relative w-full" ref={suggestionsRef}>
+    <div className={`relative w-full ${className}`} ref={suggestionsRef}>
       <div className="relative">
+        <div className={`absolute left-4 top-1/2 transform -translate-y-1/2 transition-all duration-200 ${
+          isFocused ? 'text-blue-500' : 'text-slate-400'
+        }`}>
+          <Search className="h-5 w-5" />
+        </div>
+        
         <input
           ref={inputRef}
           type="text"
           value={query}
           onChange={handleInputChange}
           onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+          onFocus={() => {
+            setIsFocused(true);
+            if (query.trim().length >= 2) {
+              setShowSuggestions(true);
+            }
+          }}
+          onBlur={() => setIsFocused(false)}
           placeholder={placeholder}
-          className="form-input pl-12 pr-12 py-3 text-base bg-white dark:bg-navy-800 border-navy-300 dark:border-navy-600 rounded-xl focus:border-ocean-500 focus:ring-ocean-200 dark:focus:border-ocean-400 shadow-sm"
+          className={`w-full pl-12 pr-12 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 font-medium transition-all duration-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white dark:focus:bg-slate-700 shadow-sm focus:shadow-lg ${
+            isFocused ? 'shadow-lg shadow-blue-500/10' : ''
+          }`}
         />
         
-        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-navy-400 dark:text-navy-500" />
-        
-        {query && (
-          <button
-            onClick={clearQuery}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-navy-400 hover:text-navy-600 dark:text-navy-500 dark:hover:text-navy-300 transition-colors duration-200"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        )}
+        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+          {suggestionsLoading && (
+            <Loader2 className="h-4 w-4 text-blue-500 animate-spin" />
+          )}
+          {query && (
+            <button
+              onClick={clearQuery}
+              className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Suggestions Dropdown */}
       {showSuggestions && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-navy-800 rounded-xl shadow-xl border border-navy-200 dark:border-navy-700 z-50 max-h-96 overflow-y-auto">
-          {suggestionsLoading ? (
-            <div className="p-6 text-center text-muted">
-              <div className="loading-spinner h-5 w-5 mx-auto mb-3"></div>
-              <p>Finding content...</p>
-              <p className="text-sm mt-2">Please wait while we search</p>
-            </div>
-          ) : suggestions.length > 0 ? (
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 z-50 max-h-96 overflow-hidden">
+          {suggestions.length > 0 ? (
             <div className="py-2">
+              <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-700">
+                <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
+                  Suggestions
+                </p>
+              </div>
+              
               {suggestions.map((suggestion, index) => (
                 <button
                   key={suggestion.id}
                   onClick={() => handleSuggestionClick(suggestion)}
-                  disabled={isNavigating}
-                  className={`w-full px-4 py-3 text-left hover:bg-ocean-50 dark:hover:bg-ocean-950 transition-colors duration-200 ${
-                    index === selectedIndex ? 'bg-ocean-50 dark:bg-ocean-950' : ''
-                  } ${isNavigating ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`w-full px-4 py-4 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all duration-200 ${
+                    index === selectedIndex ? 'bg-blue-50 dark:bg-blue-900/30 border-r-2 border-blue-500' : ''
+                  }`}
                 >
-                  <div className="flex items-center gap-3">
-                    {isNavigating ? (
-                      <div className="loading-spinner h-4 w-4"></div>
-                    ) : (
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center flex-shrink-0">
                       <span className="text-lg">{getTypeIcon(suggestion.type)}</span>
-                    )}
+                    </div>
                     <div className="flex-1 min-w-0">
                       <div 
-                        className="font-medium text-sm text-navy-900 dark:text-navy-100 truncate"
+                        className="font-semibold text-slate-900 dark:text-slate-100 truncate text-sm mb-1"
                         dangerouslySetInnerHTML={{ __html: suggestion.highlightedTitle || suggestion.title || 'Untitled' }}
                       />
-                      <div className="text-xs text-muted">
-                        {isNavigating ? 'Loading...' : getTypeLabel(suggestion.type)}
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-medium text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 px-2 py-1 rounded-lg">
+                          {getTypeLabel(suggestion.type)}
+                        </span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">
+                          {suggestion.authorName}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -341,38 +268,35 @@ const SearchInput = ({
               ))}
               
               {query.trim() && (
-                <div className="border-t border-navy-200 dark:border-navy-700 mt-2 pt-2">
+                <div className="border-t border-slate-100 dark:border-slate-700 mt-2 pt-2">
                   <button
                     onClick={handleSearch}
-                    className="w-full px-4 py-3 text-left text-ocean-600 dark:text-ocean-400 hover:bg-ocean-50 dark:hover:bg-ocean-950 font-medium transition-colors duration-200"
+                    className="w-full px-4 py-4 text-left text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 font-semibold transition-all duration-200 flex items-center gap-3"
                   >
-                    🔍 Search for "{query.trim()}"
+                    <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                      <Search className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <span>Search for "{query.trim()}"</span>
                   </button>
                 </div>
               )}
             </div>
           ) : query.trim().length >= 2 ? (
-            <div className="p-6 text-center text-muted">
-              <p>No suggestions found</p>
-              <p className="text-sm mt-2">Try different keywords</p>
+            <div className="p-6 text-center">
+              <div className="w-12 h-12 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <Search className="h-6 w-6 text-slate-400" />
+              </div>
+              <p className="text-slate-600 dark:text-slate-400 font-medium mb-2">No suggestions found</p>
+              <p className="text-sm text-slate-500 dark:text-slate-500 mb-4">Try different keywords</p>
               <button
                 onClick={handleSearch}
-                className="btn-primary mt-3 px-4 py-2 text-sm"
+                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-semibold text-sm transition-colors"
               >
                 Search Anyway
               </button>
             </div>
           ) : null}
         </div>
-      )}
-
-      {/* Toast Notification */}
-      {showToast && (
-        <Toast
-          message={toastMessage}
-          type={toastType}
-          onClose={() => setShowToast(false)}
-        />
       )}
     </div>
   );
