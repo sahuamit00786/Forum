@@ -1,0 +1,467 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Nautical Design System - Global Styles */
+@layer base {
+  * {
+    @apply border-navy-200 dark:border-navy-700;
+  }
+  
+  html {
+    @apply antialiased;
+  }
+  
+  body {
+    @apply font-sans text-navy-900 dark:text-navy-50 bg-navy-50 dark:bg-navy-900;
+    @apply transition-colors duration-300;
+  }
+  
+  /* Beautiful scrollbars */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-navy-100 dark:bg-navy-800;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-ocean-400 dark:bg-ocean-600 rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-ocean-500 dark:bg-ocean-500;
+  }
+}
+
+@layer components {
+  /* Card Components */
+  .card {
+    @apply bg-white dark:bg-navy-800 rounded-xl border border-navy-200 dark:border-navy-700;
+    @apply shadow-card hover:shadow-card-hover transition-all duration-200;
+  }
+  
+  .card-interactive {
+    @apply card hover:border-ocean-300 dark:hover:border-ocean-600;
+    @apply hover:-translate-y-0.5 hover:shadow-ocean;
+  }
+  
+  /* Button Components */
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+  
+  .btn-primary {
+    @apply btn bg-ocean-600 hover:bg-ocean-700 text-white;
+    @apply focus:ring-ocean-500 shadow-ocean hover:shadow-ocean-lg;
+  }
+  
+  .btn-secondary {
+    @apply btn bg-navy-100 hover:bg-navy-200 text-navy-700;
+    @apply dark:bg-navy-700 dark:hover:bg-navy-600 dark:text-navy-200;
+    @apply focus:ring-navy-500;
+  }
+  
+  .btn-gold {
+    @apply btn bg-gold-500 hover:bg-gold-600 text-white;
+    @apply focus:ring-gold-500 shadow-gold;
+  }
+  
+  .btn-coral {
+    @apply btn bg-coral-500 hover:bg-coral-600 text-white;
+    @apply focus:ring-coral-500;
+  }
+  
+  /* Navigation */
+  .nav-link {
+    @apply px-3 py-2 rounded-lg font-medium transition-all duration-200;
+    @apply text-navy-600 hover:text-ocean-600 hover:bg-ocean-50;
+    @apply dark:text-navy-300 dark:hover:text-ocean-400 dark:hover:bg-ocean-950;
+  }
+  
+  .nav-link-active {
+    @apply nav-link bg-ocean-100 text-ocean-700 dark:bg-ocean-950 dark:text-ocean-300;
+  }
+  
+  /* Form Elements */
+  .form-input {
+    @apply w-full px-3 py-2 border rounded-lg transition-colors duration-200;
+    @apply border-navy-300 focus:border-ocean-500 focus:ring-2 focus:ring-ocean-200;
+    @apply dark:border-navy-600 dark:bg-navy-800 dark:focus:border-ocean-400;
+    @apply placeholder-navy-400 dark:placeholder-navy-500;
+  }
+  
+  .form-textarea {
+    @apply form-input min-h-[100px] resize-y;
+  }
+  
+  /* Typography */
+  .heading-1 {
+    @apply text-3xl md:text-4xl font-bold text-navy-900 dark:text-navy-50;
+  }
+  
+  .heading-2 {
+    @apply text-2xl md:text-3xl font-bold text-navy-900 dark:text-navy-50;
+  }
+  
+  .heading-3 {
+    @apply text-xl md:text-2xl font-semibold text-navy-900 dark:text-navy-50;
+  }
+  
+  .text-muted {
+    @apply text-navy-600 dark:text-navy-400;
+  }
+  
+  /* Badges and Pills */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .badge-primary {
+    @apply badge bg-ocean-100 text-ocean-800 dark:bg-ocean-900 dark:text-ocean-200;
+  }
+  
+  .badge-gold {
+    @apply badge bg-gold-100 text-gold-800 dark:bg-gold-900 dark:text-gold-200;
+  }
+  
+  .badge-seafoam {
+    @apply badge bg-seafoam-100 text-seafoam-800 dark:bg-seafoam-900 dark:text-seafoam-200;
+  }
+  
+  /* Thread and Post Cards */
+  .thread-card {
+    @apply card-interactive p-4 md:p-6;
+  }
+  
+  .thread-meta {
+    @apply flex items-center gap-2 text-sm text-muted;
+  }
+  
+  .stat-item {
+    @apply flex items-center gap-1 text-sm text-muted;
+  }
+  
+  /* Sidebar */
+  .sidebar-section {
+    @apply mb-6;
+  }
+  
+  .sidebar-title {
+    @apply text-sm font-semibold text-navy-900 dark:text-navy-100 mb-3;
+  }
+  
+  .sidebar-link {
+    @apply block px-3 py-2 text-sm rounded-lg transition-colors duration-200;
+    @apply text-navy-600 hover:text-ocean-600 hover:bg-ocean-50;
+    @apply dark:text-navy-400 dark:hover:text-ocean-400 dark:hover:bg-ocean-950;
+  }
+  
+  .sidebar-link-active {
+    @apply sidebar-link bg-ocean-100 text-ocean-700 dark:bg-ocean-950 dark:text-ocean-300;
+  }
+  
+  /* Loading States */
+  .loading-spinner {
+    @apply animate-spin rounded-full border-2 border-navy-200 border-t-ocean-600;
+  }
+  
+  /* Animations */
+  .fade-in {
+    @apply animate-fade-in;
+  }
+  
+  .slide-up {
+    @apply animate-slide-up;
+  }
+  
+  .float {
+    @apply animate-float;
+  }
+}
+
+/* Custom styles for React Quill editor */
+.ql-editor {
+  min-height: 200px;
+  font-family: inherit;
+}
+
+.ql-toolbar {
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  border-color: rgb(209 213 219);
+}
+
+.ql-container {
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  border-color: rgb(209 213 219);
+}
+
+/* Dark mode styles for Quill */
+.dark .ql-toolbar {
+  background: #1a1a1a;
+  border-color: #22c55e;
+}
+
+.dark .ql-container {
+  background: #1a1a1a;
+  border-color: #22c55e;
+}
+
+.dark .ql-editor {
+  color: #f8fafc;
+}
+
+.dark .ql-editor.ql-blank::before {
+  color: #94a3b8;
+}
+
+.dark .ql-stroke {
+  stroke: #22c55e;
+}
+
+.dark .ql-fill {
+  fill: #22c55e;
+}
+
+.dark .ql-picker {
+  color: #22c55e;
+}
+
+.dark .ql-picker-options {
+  background: #1a1a1a;
+  border-color: #22c55e;
+}
+
+.dark .ql-picker-item {
+  color: #22c55e;
+}
+
+.dark .ql-picker-item:hover {
+  background: #262626;
+  color: #f8fafc;
+}
+
+.dark .ql-picker-label {
+  color: #22c55e;
+}
+
+.dark .ql-picker-label:hover {
+  color: #f8fafc;
+}
+
+.dark .ql-picker-label.ql-active {
+  color: #22c55e;
+}
+
+.dark .ql-tooltip {
+  background: #1a1a1a;
+  border-color: #22c55e;
+  color: #f8fafc;
+}
+
+.dark .ql-tooltip a {
+  color: #22c55e;
+}
+
+/* Custom color for active states */
+.ql-active {
+  color: #22c55e !important;
+}
+
+.dark .ql-active {
+  color: #22c55e !important;
+}
+
+/* Sidebar styles */
+.sidebar-item {
+  @apply flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200;
+  @apply text-gray-700 dark:text-gray-300;
+  @apply hover:bg-gray-100 dark:hover:bg-gray-800;
+}
+
+.sidebar-item.active {
+  @apply bg-lime-100 dark:bg-lime-900/20;
+  @apply text-lime-700 dark:text-lime-300;
+}
+
+/* Dark mode variables */
+:root {
+  --dark-50: #f9fafb;
+  --dark-100: #f3f4f6;
+  --dark-200: #e5e7eb;
+  --dark-300: #d1d5db;
+  --dark-400: #9ca3af;
+  --dark-500: #6b7280;
+  --dark-600: #4b5563;
+  --dark-700: #374151;
+  --dark-800: #1f2937;
+  --dark-900: #111827;
+}
+
+/* Primary color variables */
+:root {
+  --primary-50: #f0fdf4;
+  --primary-100: #dcfce7;
+  --primary-200: #bbf7d0;
+  --primary-300: #86efac;
+  --primary-400: #4ade80;
+  --primary-500: #22c55e;
+  --primary-600: #16a34a;
+  --primary-700: #15803d;
+  --primary-800: #166534;
+  --primary-900: #14532d;
+}
+
+/* Clean Dark Mode Styles */
+.dark {
+  background: #1a1a1a;
+  color: #f8fafc;
+}
+
+/* Card styles with clean lime accents */
+.dark .bg-white {
+  background: #262626;
+  border: 1px solid #22c55e;
+}
+
+.dark .bg-gray-50 {
+  background: #1a1a1a;
+}
+
+.dark .bg-gray-100 {
+  background: #262626;
+}
+
+/* Button styles */
+.dark .bg-primary-600 {
+  background: #22c55e;
+}
+
+.dark .bg-primary-600:hover {
+  background: #16a34a;
+}
+
+/* Text colors */
+.dark .text-gray-900 {
+  color: #f8fafc;
+}
+
+.dark .text-gray-800 {
+  color: #f1f5f9;
+}
+
+.dark .text-gray-700 {
+  color: #e2e8f0;
+}
+
+.dark .text-gray-600 {
+  color: #cbd5e1;
+}
+
+.dark .text-gray-500 {
+  color: #94a3b8;
+}
+
+.dark .text-gray-400 {
+  color: #64748b;
+}
+
+.dark .text-gray-300 {
+  color: #475569;
+}
+
+/* Border colors */
+.dark .border-gray-200 {
+  border-color: #22c55e;
+}
+
+.dark .border-gray-300 {
+  border-color: #64748b;
+}
+
+.dark .border-dark-700 {
+  border-color: #334155;
+}
+
+/* Hover effects */
+.dark .hover\:bg-gray-100:hover {
+  background: #262626;
+}
+
+.dark .hover\:bg-dark-700:hover {
+  background: #262626;
+}
+
+/* Focus states */
+.dark .focus\:ring-primary-500:focus {
+  --tw-ring-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+}
+
+/* Custom scrollbar for dark mode */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #22c55e;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #16a34a;
+}
+
+/* Clean card hover effects */
+.dark .card-hover {
+  transition: all 0.2s ease;
+}
+
+.dark .card-hover:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Lime accent colors */
+.dark .text-\[#f97315\] {
+  color: #22c55e;
+}
+
+.dark .hover\:text-\[#f97315\]:hover {
+  color: #16a34a;
+}
+
+.dark .bg-\[#f97315\] {
+  background: #22c55e;
+}
+
+.dark .hover\:bg-\[#ea580c\]:hover {
+  background: #16a34a;
+}
+
+/* Subtle grid background */
+.cyber-grid {
+  background-image: 
+    linear-gradient(rgba(34, 197, 94, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 197, 94, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-position: center center;
+}
